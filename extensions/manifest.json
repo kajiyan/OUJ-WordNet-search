@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "WordNet Search",
+  "permissions":[
+    "storage"
+  ],
+  "version": "1.0.0",
+  "icons": {
+    "38": "assets/img/icon38.png",
+    "48": "assets/img/icon48.png",
+    "128": "assets/img/icon128.png"
+  },
+  "description": "WordNet Search は、WordNet を利用して検索キーワードから上位概念、下位概念からもっとも類似度の低いキーワードをあわせて検索する機能です。",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.com/search*"
+      ],
+      "js":[
+        "jquery-3.6.0.min.js",
+        "content.js"
+      ],
+      "css":[
+        "css/style.css"
+      ]
+    }
+  ]
+}
