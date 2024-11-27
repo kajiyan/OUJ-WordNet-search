@@ -104,7 +104,7 @@ module.exports.search = async (event) => {
     // ローカル環境での処理
     console.log('ローカル環境です。ローカルのモデルファイルを使用します。');
     // ローカルのvectors.txtへのパスを設定
-    modelPath = path.join(__dirname, MODEL_FILE);
+    modelPath = `../../experiments/${MODEL_FILE}`;
     
     if (!fs.existsSync(modelPath)) {
       console.error('ローカルのモデルファイルが見つかりません。');

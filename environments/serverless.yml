@@ -1,4 +1,4 @@
-service: OUJ-WordNet-search
+service: ouj-wordnet-search
 frameworkVersion: "3"
 provider:
   name: aws
