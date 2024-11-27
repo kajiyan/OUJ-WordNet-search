@@ -1,0 +1,28 @@
+{
+  "name": "OUJ-WordNet-search",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "deploy": "npx sls deploy --verbose",
+    "deploy-prod": "npx sls deploy --stage prod --verbose",
+    "dev": "npx sls offline start",
+    "dynamodb-start": "npx sls dynamodb start",
+    "dynamodb-admin": "npx dynamodb-admin",
+    "info": "npx sls info --verbose",
+    "info-prod": "npx sls info --stage prod --verbose",
+    "remove": "npx sls remove --verbose",
+    "remove-prod": "npx sls remove --stage prod --verbose"
+  },
+  "author": "Hiroki Kajiya",
+  "license": "MIT",
+  "devDependencies": {
+    "serverless-offline": "^13.2.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.701.0",
+    "axios": "^1.7.8",
+    "natural": "^8.0.1",
+    "qs": "^6.13.1",
+    "word2vec": "^1.1.5"
+  }
+}

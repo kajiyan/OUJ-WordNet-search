@@ -1,0 +1,77 @@
+service: OUJ-WordNet-search
+frameworkVersion: "3"
+provider:
+  name: aws
+  profile: nzu
+  region: ap-northeast-1
+  runtime: nodejs18.x
+  environment:
+    # ${sls:stage} は ${opt:stage, self:provider.stage, "dev"} のショートカット
+    REGION: ${aws:region}
+    S3_BUCKET: ${self:service}-${sls:stage}-bucket
+    TZ: Asia/Tokyo
+    CX: ${self:custom.secrets.CX}
+    KEY: ${self:custom.secrets.KEY}
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 's3:GetObject'
+            - 's3:ListBucket'
+            - 's3:PutObject'
+          Resource:
+            Fn::Join:
+              - ''
+              - - 'arn:aws:s3:::'
+                - 'Ref': 'S3Bucket'
+                - '/*'
+        - Effect: 'Allow'
+          Action:
+            - 'rekognition:DetectFaces'
+          Resource: '*'
+functions:
+  get:
+    handler: handlers/search.search
+    events:
+      - http:
+          path: search
+          method: get
+          cors: true
+    memorySize: 2048 # メモリを2GBに設定
+    timeout: 30
+resources:
+  Resources:
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        # AccessControl: PublicRead
+        BucketName: ${self:provider.environment.S3_BUCKET}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          IgnorePublicAcls: false
+          BlockPublicPolicy: false
+          RestrictPublicBuckets: false
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: error.html
+    S3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref S3Bucket
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: 'Allow'
+              Principal: '*'
+              Action:
+                - 's3:GetObject'
+                - 's3:PutObject'
+                - 's3:ListBucket'
+              Resource:
+                - 'arn:aws:s3:::${self:provider.environment.S3_BUCKET}'
+                - 'arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*'
+custom:
+  secrets: ${file(secrets.yml)}
+plugins:
+  - serverless-offline
