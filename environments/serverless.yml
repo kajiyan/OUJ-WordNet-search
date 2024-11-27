@@ -12,24 +12,28 @@ provider:
     TZ: Asia/Tokyo
     CX: ${self:custom.secrets.CX}
     KEY: ${self:custom.secrets.KEY}
-  iam:
-    role:
-      statements:
-        - Effect: 'Allow'
-          Action:
-            - 's3:GetObject'
-            - 's3:ListBucket'
-            - 's3:PutObject'
-          Resource:
-            Fn::Join:
-              - ''
-              - - 'arn:aws:s3:::'
-                - 'Ref': 'S3Bucket'
-                - '/*'
-        - Effect: 'Allow'
-          Action:
-            - 'rekognition:DetectFaces'
-          Resource: '*'
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 's3:GetObject'
+        - 's3:ListBucket'
+        - 's3:PutObject'
+      Resource:
+        - 'arn:aws:s3:::${self:provider.environment.S3_BUCKET}'
+        - 'arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*'
+  apiGateway:
+    apiKeys:
+      - get:
+          - name: hk-wordnet-search-api
+            value: ${self:custom.secrets.APP_API_KEY}
+    usagePlan:
+      - get:
+          quota:
+            limit: 1000 # API の呼び出しを行える最大回数
+            period: DAY # DAY or WEEK or MONTH
+          throttle:
+            burstLimit: 100 # 同時に処理できる最大リクエスト数
+            rateLimit: 20 # 1 秒あたりに処理できる API リクエスト数
 functions:
   get:
     handler: handlers/search.search
@@ -39,7 +43,7 @@ functions:
           method: get
           cors: true
     memorySize: 2048 # メモリを2GBに設定
-    timeout: 30
+    timeout: 60
 resources:
   Resources:
     S3Bucket:
