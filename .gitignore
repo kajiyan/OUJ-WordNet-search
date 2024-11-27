@@ -130,4 +130,5 @@ dist
 .pnp.*
 
 secrets.yml
+glove.6B.100d.txt
 glove.6B.100d.word2vec.txt
