@@ -1,1 +1,1 @@
-# OUJ-WordNet-search
+# WordNet Search
